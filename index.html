@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Weather</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Don't forget to link to jQuery -->
+<style>
+	input{
+		margin: 10px 0px;
+		padding: 5px;
+	}
+	#forecast{
+		display:none;
+		/*This div should not appear until the weather is returned.*/
+	}
+	#forecast div{
+		width: 25vw;
+		border: 8px solid blue;
+		margin: 0 auto;
+		background: black;
+	}
+	img{
+		width:100%;
+	}
+</style>
+<script>
+    function gettingJSON(){
+    	console.log("Hi")
+
+    	var API_ID = "c6b4fe44e4633782315274a681a25620";
+    	var default_city = "Ann Arbor"
+    	var temperature = "imperial"
+
+    	if($("#location").val() != ''){
+    		default_city = $("#location").val()
+    	}
+
+    	if($("input:checked").length != 0){
+    		temperature = $("input:checked")[0].defaultValue;
+    	}
+
+
+
+		let query = "http://api.openweathermap.org/data/2.5/weather?q=" + default_city + "&units=" + temperature +"&APPID=" + API_ID;
+        console.log("Query is :" + query)
+
+        $.getJSON(query,function(json){
+            console.log(JSON.stringify(json));
+            console.log(json.main.temp, json.main.temp_min, json.main.temp_max, json.weather[0].icon);
+            $("#forecast").css("display","block");
+             var icon_url= "http://openweathermap.org/img/wn/" + json.weather[0].icon + "@2x.png";
+
+           	$("#loc").html(default_city);
+           	$("#temp").html(json.main.temp);
+           	$("#high").html(json.main.temp_max);
+           	$("#low").html(json.main.temp_min);
+           	$("#tempImg").attr("src", icon_url);
+
+           	
+
+    })
+    }
+    </script>
+</head>
+<body>
+	<!-- DO NOT CHANGE ANY CODE IN THE BODY OF THIS FILE. -->
+	<label for ="location">City:</label><input type = "text" id = "location"><br>
+	<input type = "radio" name = "temp" value = "imperial" id = "fahrenheit"> <label for = "fahrenheit">Fahrenheit</label><br>
+	<input type = "radio" name = "temp" value = "metric" id = "celcius"> <label for = "celcius">Celcius</label><br>
+
+	<button id = "getIt" onclick = " gettingJSON()">Get Weather</button>
+
+
+	<div id = "forecast">
+		<div>
+		<img id = "tempImg" src="" alt = "" title = "">
+		</div>
+		<p>The temperature in <span id = "loc"></span> is currently <span id = "temp"></span>.</p>
+		<p>The high today will be <span id = "high"></span> and the low will be <span id = "low"></span>.</p>
+		
+	</div>
+</body>
+</html>
